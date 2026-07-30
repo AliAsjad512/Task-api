@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment: staging
-      steps:
-        - uses: actions/checkout@v4
-        - run: ./scripts/deploy.sh
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./scripts/deploy.sh
      
