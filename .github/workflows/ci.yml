@@ -24,7 +24,18 @@ jobs:
       - uses: actions/checkout@v4
       - run:  npm run dev
   docker:
+    
     runs-on: ubuntu-latest
+    services:              # ← sibling of runs-on and steps
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: task_api
+        ports:
+          - 5432:5432
+   
     steps:   
       - name: Checkout code
         uses: actions/checkout@v4
