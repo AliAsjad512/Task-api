@@ -51,22 +51,7 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/task-api:latest
  
-      services:
-        postgres:
-          image: postgres:16
-          env:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: task_api
-          ports:
-            - 5432:5432
-          env:
-            PGHOST: localhost
-            PGPORT: 5432
-            PGUSER: postgres
-            PGPASSWORD: postgres
-            PGDATABASE: task_api
-          run: npm test    
+       
   
   deploy:
     runs-on: ubuntu-latest
