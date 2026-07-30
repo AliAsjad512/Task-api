@@ -1,32 +1,12 @@
 name: Task Api
-
 on:
   push:
     branches:
       - main
-
 jobs:
   task-api:
     runs-on: ubuntu-latest
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # Specify your required Node version
-          cache: 'npm'       # Automatically cache npm dependencies
-      - run: npm ci && npm test
-  build:
-    runs-on: ubuntu-latest
-    needs: task-api
-    steps:
-      - uses: actions/checkout@v4
-      - run:  npm run dev
-  docker:
-    
-    runs-on: ubuntu-latest
-    services:              # ← sibling of runs-on and steps
+    services:
       postgres:
         image: postgres:16
         env:
@@ -35,8 +15,28 @@ jobs:
           POSTGRES_DB: task_api
         ports:
           - 5432:5432
-   
-    steps:   
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Run tests
+        env:
+          PGHOST: localhost
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: task_api
+        run: npm test
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: task-api
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Docker Login
@@ -44,20 +44,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/task-api:latest .
-
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/task-api:latest
- 
-       
-  
+
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: docker
     environment: staging
     steps:
-      - uses: actions/checkout@v4
-      - run: ./scripts/deploy.sh
-     
+      - name: Deploy placeholder
+        run: echo "Deploy step goes here once DEPLOY_HOST, DEPLOY_USER, and DEPLOY_SSH_KEY secrets are added"
