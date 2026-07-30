@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  unit-test:
+  task-api:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
@@ -19,7 +19,7 @@ jobs:
       - run: npm ci && npm test
   build:
     runs-on: ubuntu-latest
-      needs: unit-test
+      needs: task-api
       steps:
         - uses: actions/checkout@v4
         - run:  npm run dev
