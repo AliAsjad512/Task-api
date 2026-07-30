@@ -26,8 +26,8 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      
-      - uses: actions/checkout@v4
+      - name: checkout code
+        uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
